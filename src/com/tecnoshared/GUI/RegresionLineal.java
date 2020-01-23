@@ -2,6 +2,12 @@ package com.tecnoshared.GUI;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class RegresionLineal extends javax.swing.JFrame {
     private double X,Y,sy,sx,scx,sxy,ascx;
@@ -113,8 +119,15 @@ public class RegresionLineal extends javax.swing.JFrame {
         return sXy;
     }
     //Con este método validamos que todos los numeros sean positivos
-    public boolean Validar(){
-        if((Double.parseDouble(txtX.getText())>0)&&(Double.parseDouble(txtY.getText())>0)){
+    private boolean ValidarY(){
+        if(txtY.getText().length()!=0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private boolean ValidarX(){
+        if(txtX.getText().length()!=0){
             return true;
         }else{
             return false;
@@ -163,9 +176,60 @@ public class RegresionLineal extends javax.swing.JFrame {
         b=(n*sxy-sx*sy)/denominador();
         return b;
     }
+    //metodo para obtener el vector x
+    private double[] vectX(){
+        double [] x=new double[TablaFrecuencias.getRowCount()];
+        for(int i=0; i<TablaFrecuencias.getRowCount();i++){
+            x[i]=Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0));
+        }
+        return x;
+    }
+    //Método para obtener el vector y
+    private double[] vectY(){
+        double[] y = new double[TablaFrecuencias.getRowCount()];
+        for(int j=0; j<TablaFrecuencias.getRowCount();j++){
+            y[j]=Double.parseDouble((String) TablaFrecuencias.getValueAt(j, 1));
+        }
+        return y;
+    }
     //Metodo para dibujar la nube de puntos
     public void NubePuntos(){
-        
+        double [] x=vectX();
+        double[] y =vectY();
+        XYSeries s = new XYSeries("");
+        for(int i=0;i<x.length;i++){
+            s.add(x[i],y[i]);
+        }
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(s);
+        JFreeChart chart = ChartFactory.createScatterPlot("Nube de puntos", "X", "Y", dataset, PlotOrientation.VERTICAL, false, false, false);
+        ChartPanel panel = new ChartPanel(chart);
+        Graficos.setLayout(new java.awt.BorderLayout());
+        Graficos.add(panel);
+        Graficos.validate();
+    }
+    //Agregar datos a la tabla
+    private void AgregarDatosTabla(){
+        if((ValidarX()==true)&&(ValidarY()==true)){
+            if((Double.parseDouble(txtX.getText())>0)&&(Double.parseDouble(txtY.getText())>0)){
+                TablaFrecuencias();
+                Limpiar();
+                txtX.requestFocus();
+                lblTreg.setText("Total de registros: " + TablaFrecuencias.getRowCount());//TablaFrecuencias.getRowCount() nos devuelve el numero de registros
+                txtSX.setText(Double.toString(sumatoria(0)));
+                txtSY.setText(Double.toString(sumatoria(1)));
+                txtSCX.setText(Double.toString(sumatoria(4)));
+                txtSXY.setText(Double.toString(sumatoria(5)));
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "Ingrese solo números positivos");
+                Limpiar();
+                txtX.requestFocus();
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Ingrese solo números positivos");
+            Limpiar();
+            txtX.requestFocus();
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -207,8 +271,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         txtSY = new javax.swing.JTextField();
         txtSCX = new javax.swing.JTextField();
         txtSXY = new javax.swing.JTextField();
-        jPanel6 = new javax.swing.JPanel();
-        Plano = new javax.swing.JPanel();
+        Graficos = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -551,34 +614,18 @@ public class RegresionLineal extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        jPanel6.setBackground(new java.awt.Color(46, 204, 113));
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Plano en 2D", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 18))); // NOI18N
+        Graficos.setBackground(new java.awt.Color(46, 204, 113));
+        Graficos.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Plano en 2D", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 18))); // NOI18N
 
-        Plano.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout PlanoLayout = new javax.swing.GroupLayout(Plano);
-        Plano.setLayout(PlanoLayout);
-        PlanoLayout.setHorizontalGroup(
-            PlanoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 801, Short.MAX_VALUE)
+        javax.swing.GroupLayout GraficosLayout = new javax.swing.GroupLayout(Graficos);
+        Graficos.setLayout(GraficosLayout);
+        GraficosLayout.setHorizontalGroup(
+            GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 825, Short.MAX_VALUE)
         );
-        PlanoLayout.setVerticalGroup(
-            PlanoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        GraficosLayout.setVerticalGroup(
+            GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Plano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Plano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel2.setBackground(new java.awt.Color(39, 174, 96));
@@ -662,7 +709,7 @@ public class RegresionLineal extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -674,7 +721,7 @@ public class RegresionLineal extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -705,25 +752,11 @@ public class RegresionLineal extends javax.swing.JFrame {
     
     //Con este evento guardamos los datos en la row presionando enter
     private void txtYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtYActionPerformed
-        // TODO add your handling code here:
-        if(Validar()==true){
-            TablaFrecuencias();
-            Limpiar();
-            txtX.requestFocus();
-            lblTreg.setText("Total de registros: " + TablaFrecuencias.getRowCount());//TablaFrecuencias.getRowCount() nos devuelve el numero de registros
-            txtSX.setText(Double.toString(sumatoria(0)));
-            txtSY.setText(Double.toString(sumatoria(1)));
-            txtSCX.setText(Double.toString(sumatoria(4)));
-            txtSXY.setText(Double.toString(sumatoria(5)));
-        }else{
-            JOptionPane.showMessageDialog(rootPane, "Ingrese solo números positivos");
-            Limpiar();
-            txtX.requestFocus();
-        }
+        AgregarDatosTabla();
     }//GEN-LAST:event_txtYActionPerformed
 
     private void btnGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficarActionPerformed
-        // TODO add your handling code here:
+        NubePuntos();
     }//GEN-LAST:event_btnGraficarActionPerformed
 
     private void txtXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtXKeyTyped
@@ -801,8 +834,8 @@ public class RegresionLineal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Graficos;
     private javax.swing.ButtonGroup IngresoDeDatos;
-    private javax.swing.JPanel Plano;
     private javax.swing.JTable TablaFrecuencias;
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnEliminar;
@@ -831,7 +864,6 @@ public class RegresionLineal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTreg;
     private javax.swing.JRadioButton rbtnDetener;

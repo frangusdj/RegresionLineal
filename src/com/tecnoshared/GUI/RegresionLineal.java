@@ -22,7 +22,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         setAscx(0);
     }
     //Método paea que no se puedan editar ciertas cajas de texto al iniciar el constructor
-    public void inhabilitar(){
+    private void inhabilitar(){
         txtX.setEditable(true);
         txtY.setEditable(true);
         txtA.setEditable(false);
@@ -40,14 +40,14 @@ public class RegresionLineal extends javax.swing.JFrame {
         txtSXY.setEnabled(false);
     }
     //Método para inhabilitar ciertas partes cuando se presione el radiobutton ingreso
-    public void InhabilitarIngreso(){
+    private void InhabilitarIngreso(){
         btnGuardar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnCalcular.setEnabled(false);
         btnGraficar.setEnabled(false);
     }
     //Método para enviar los datos al encabezado
-    public void DatosGenerales(){
+    private void DatosGenerales(){
         txtFac.setText("Informatica y Electronica");
         txtCar.setText("Software");
         txtDoc.setText("Narcisa Salazar");
@@ -55,7 +55,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         txtCod.setText("6705");
     }
     //Mitar modulos cuando se presione el radiobutton detener
-    public void detener(){
+    private void detener(){
         txtX.setEditable(false);
         txtY.setEditable(false);
         btnCalcular.setEnabled(true);
@@ -81,7 +81,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return Y;
     }
     //Con este metodo enviamos a limpiar las cajas de texto
-    public void Limpiar(){
+    private void Limpiar(){
         txtX.setText("");
         txtY.setText("");
     }
@@ -91,7 +91,7 @@ public class RegresionLineal extends javax.swing.JFrame {
     }
     
     //Metodo sumatoria x
-    public double SumX(){
+    private double SumX(){
         double x;
         x=0;
         x=getX1()+Double.parseDouble(txtX.getText());
@@ -99,7 +99,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return x;
     }
     //Metodo para la sumatoria y
-    public double SumY(){
+    private double SumY(){
         double y;
         y=0;
         y=getY1()+Double.parseDouble(txtY.getText());
@@ -107,13 +107,13 @@ public class RegresionLineal extends javax.swing.JFrame {
         return y;
     }
     //Método para sumatoria al cuadrado de X
-    public double SumCX(){
+    private double SumCX(){
         double sCx;
         sCx=Math.pow(Double.parseDouble(txtX.getText()), 2.0);
         return sCx;
     }
     //Método para calcular la sumatoria de x por y
-    public double SumXY(){
+    private double SumXY(){
         double sXy;
         sXy=Double.parseDouble(txtX.getText())*Double.parseDouble(txtY.getText());
         return sXy;
@@ -133,12 +133,12 @@ public class RegresionLineal extends javax.swing.JFrame {
             return false;
         }
     }
-    public void TablaFrecuencias(){
+    private void TablaFrecuencias(){
         DefaultTableModel modelo2 = (DefaultTableModel) TablaFrecuencias.getModel();//Creamos un objeto default table model llamado modelo2
         modelo2.addRow(new Object[]{txtX.getText(),txtY.getText(),Double.toString(SumX()),Double.toString(SumY()),Double.toString(SumCX()),Double.toString(SumXY())});//Al objeto modelo le añadimos un row y le pasamos un vector con los parametros que debe insertar
     }
     //Método generico para crear la sumatoria
-    public double sumatoria(int f){
+    private double sumatoria(int f){
         double total=0;
         for(int i =0; i<TablaFrecuencias.getRowCount();i++){
             total+=Double.parseDouble(TablaFrecuencias.getValueAt(i, f).toString());
@@ -146,7 +146,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return total;
     }
     //metodo para retornar el valor del denominador de la formula a y b
-    public double denominador(){
+    private double denominador(){
         double d,n,scx,sx;
         n=TablaFrecuencias.getRowCount();
         scx=Double.parseDouble(txtSCX.getText());
@@ -155,7 +155,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return d;
     }
     //Método para retornar el valor de A
-    public double CalcA(){
+    private double CalcA(){
         double a,sx,sy,sxy,scx,n;
         sx=Double.parseDouble(txtSX.getText());
         sy=Double.parseDouble(txtSY.getText());
@@ -167,7 +167,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return a;
     }
     //Método para calcular B
-    public double CalcB(){
+    private double CalcB(){
         double b,sx,sy,sxy,n;
         sx=Double.parseDouble(txtSX.getText());
         sy=Double.parseDouble(txtSY.getText());
@@ -193,7 +193,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         return y;
     }
     //Metodo para dibujar la nube de puntos
-    public void NubePuntos(){
+    private void NubePuntos(){
         double [] x=vectX();
         double[] y =vectY();
         XYSeries s = new XYSeries("");
@@ -211,7 +211,7 @@ public class RegresionLineal extends javax.swing.JFrame {
     //Agregar datos a la tabla
     private void AgregarDatosTabla(){
         if((ValidarX()==true)&&(ValidarY()==true)){
-            if((Double.parseDouble(txtX.getText())>0)&&(Double.parseDouble(txtY.getText())>0)){
+            if((Double.parseDouble(txtX.getText())>=0)&&(Double.parseDouble(txtY.getText())>=0)){
                 TablaFrecuencias();
                 Limpiar();
                 txtX.requestFocus();

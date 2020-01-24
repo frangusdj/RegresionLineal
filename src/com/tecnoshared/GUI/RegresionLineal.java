@@ -211,7 +211,7 @@ public class RegresionLineal extends javax.swing.JFrame {
     //Agregar datos a la tabla
     private void AgregarDatosTabla(){
         if((ValidarX()==true)&&(ValidarY()==true)){
-            if((Double.parseDouble(txtX.getText())>=0)&&(Double.parseDouble(txtY.getText())>=0)){
+            if((Double.parseDouble(txtX.getText())>=0)&&(Double.parseDouble(txtY.getText())>= 0)){
                 TablaFrecuencias();
                 Limpiar();
                 txtX.requestFocus();
@@ -230,6 +230,45 @@ public class RegresionLineal extends javax.swing.JFrame {
             Limpiar();
             txtX.requestFocus();
         }
+    }
+    //Método para buscar el mayor de todos los numeros
+    private double nMayor(){
+        double ma=Double.parseDouble((String) TablaFrecuencias.getValueAt(0, 0));
+        for(int i=0;i<TablaFrecuencias.getRowCount();i++){
+            if(ma<Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0))){
+                ma=Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0));
+            }
+        }
+        return ma;
+    }
+    //Método para buscar el menor de todos los numeros
+    private double nMenor(){
+        double me=Double.parseDouble((String) TablaFrecuencias.getValueAt(0, 0));
+        for(int i=0;i<TablaFrecuencias.getRowCount();i++){
+            if(me>Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0))){
+                me=Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0));
+            }
+        }
+        return me;
+    }
+    //Método para dibujar la curva
+    private void Curva(){
+        double[] lx={nMenor(),nMayor()};
+        double[] ly= new double[lx.length];
+        for(int i = 0; i<lx.length;i++){
+            ly[i]=CalcA()+(CalcB()*lx[i]);
+        }
+        XYSeries l = new XYSeries("");
+        for(int j = 0;j<lx.length;j++){
+            l.add(lx[j],ly[j]);
+        }
+        XYSeriesCollection dts = new XYSeriesCollection();
+        dts.addSeries(l);
+        JFreeChart line = ChartFactory.createXYLineChart("Ecuacion de la recta", "X", "Y", dts, PlotOrientation.VERTICAL, false, false, false);
+        ChartPanel panel = new ChartPanel(line);
+        Graficos.setLayout(new java.awt.BorderLayout());
+        Graficos.add(panel);
+        Graficos.validate();
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -757,6 +796,7 @@ public class RegresionLineal extends javax.swing.JFrame {
 
     private void btnGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficarActionPerformed
         NubePuntos();
+        Curva();
     }//GEN-LAST:event_btnGraficarActionPerformed
 
     private void txtXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtXKeyTyped

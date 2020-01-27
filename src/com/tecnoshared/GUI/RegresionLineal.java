@@ -270,16 +270,88 @@ public class RegresionLineal extends javax.swing.JFrame {
         Graficos.add(panel);
         Graficos.validate();
     }
+    //Método para calcular la varianza de la regresion lineal
     private double VarRegLin(){
         double syx;
         syx=Math.sqrt(((Math.pow(Double.parseDouble(txtSY.getText()), 2.0)-(CalcA()*Double.parseDouble(txtSY.getText()))-(CalcB()*Double.parseDouble(txtSXY.getText())))/(TablaFrecuencias.getRowCount())));
         return syx;
+    }
+    //Método para calcular la media
+    private double MediaX(){
+        double Me;
+        Me=Double.parseDouble(txtSX.getText())/TablaFrecuencias.getRowCount();
+        return Me;
+    }
+    //Me´todo para calcular ma media de y
+    private double MediaY(){
+        double Mey;
+        Mey=Double.parseDouble(txtSY.getText())/TablaFrecuencias.getRowCount();
+        return Mey;
+    }
+    //Méteodo ara calcular la varianza de x
+    private double VarX(){
+        double vx;
+        vx=0;
+        for(int i=0;i<TablaFrecuencias.getRowCount();i++){
+            vx+=Math.pow((Double.parseDouble((String) TablaFrecuencias.getValueAt(i,0))-MediaX()), 2.0);
+        }
+        vx=vx/(TablaFrecuencias.getRowCount()-1);
+        vx=Math.sqrt(vx);
+        return vx;
+    }
+    //Método para calcular la varianza de y
+    private double VarY(){
+        double vy;
+        vy=0;
+        for(int j=0;j<TablaFrecuencias.getRowCount();j++){
+            vy+=Math.pow((Double.parseDouble((String) TablaFrecuencias.getValueAt(j,1))-MediaY()), 2.0);
+        }
+        vy=vy/(TablaFrecuencias.getRowCount()-1);
+        vy=Math.sqrt(vy);
+        return vy;
+    }
+    //Método para el vector zx
+    private double[] Zx(){
+        double[] zx = new double[TablaFrecuencias.getRowCount()];
+        for(int i=0;i<zx.length;i++){
+            zx[i]=(Double.parseDouble((String) TablaFrecuencias.getValueAt(i, 0))-MediaX())/VarX();
+        }
+        return zx;
+    }
+    //Método para el vector Zy
+    private double[] Zy(){
+        double[] zy = new double[TablaFrecuencias.getRowCount()];
+        for(int i=0;i<zy.length;i++){
+            zy[i]=(Double.parseDouble((String) TablaFrecuencias.getValueAt(i,1))-MediaY())/VarY();
+        }
+        return zy;
+    }
+    //Método para hallar la sumatoria de la multiplicacion de los dos vectores
+    private double[] SZXY(){
+        double[] zx=Zx();
+        double[] zy=Zy();
+        double [] szxy = new double[zx.length];
+        for(int i=0; i<zx.length;i++){
+            szxy[i]=zx[i]*zy[i];
+        }
+        return szxy;
+    }
+    //Método para calcular r
+    private double CalcR(){
+        double[] szxy = SZXY();
+        double r=0;
+        for(int i=0;i<szxy.length;i++){
+            r+=szxy[i];
+        }
+        r=r/TablaFrecuencias.getRowCount();
+       return r; 
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         IngresoDeDatos = new javax.swing.ButtonGroup();
+        LineaOCurva = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -307,6 +379,8 @@ public class RegresionLineal extends javax.swing.JFrame {
         btnGraficar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
+        rbtnNube = new javax.swing.JRadioButton();
+        rbtnCurva = new javax.swing.JRadioButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaFrecuencias = new javax.swing.JTable();
@@ -512,6 +586,13 @@ public class RegresionLineal extends javax.swing.JFrame {
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/tecnoshared/Files/F(x) 128x115.png"))); // NOI18N
 
+        LineaOCurva.add(rbtnNube);
+        rbtnNube.setSelected(true);
+        rbtnNube.setText("Nube de puntos");
+
+        LineaOCurva.add(rbtnCurva);
+        rbtnCurva.setText("Curva");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -519,30 +600,6 @@ public class RegresionLineal extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(btnCalcular)
-                                .addGap(43, 43, 43)
-                                .addComponent(btnSalir)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                                .addComponent(btnGraficar))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addGap(25, 25, 25)
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtA)
-                                            .addComponent(txtB))))
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel11)))
-                        .addGap(20, 20, 20))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(108, 108, 108)
-                        .addComponent(jLabel3)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -561,9 +618,40 @@ public class RegresionLineal extends javax.swing.JFrame {
                                 .addGap(49, 49, 49)
                                 .addComponent(txtR))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(0, 49, Short.MAX_VALUE)
                                 .addComponent(jLabel8)))
-                        .addGap(35, 35, 35))))
+                        .addGap(35, 35, 35))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jLabel3)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(25, 25, 25)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtA)
+                                            .addComponent(txtB))))
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel11))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(btnCalcular)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnGraficar))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGap(64, 64, 64)
+                                        .addComponent(btnSalir)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rbtnCurva)
+                                    .addComponent(rbtnNube))))
+                        .addGap(20, 20, 20))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -596,11 +684,15 @@ public class RegresionLineal extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addComponent(txtR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCalcular)
                     .addComponent(btnGraficar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCalcular, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(rbtnNube))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalir)
+                    .addComponent(rbtnCurva))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jPanel5.setBackground(new java.awt.Color(46, 204, 113));
@@ -769,11 +861,11 @@ public class RegresionLineal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -802,8 +894,11 @@ public class RegresionLineal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtYActionPerformed
 
     private void btnGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficarActionPerformed
-        NubePuntos();
-        Curva();
+        if(rbtnNube.isSelected()== true){
+            NubePuntos();
+        }else if(rbtnCurva.isSelected()==true){
+            Curva();
+        }
     }//GEN-LAST:event_btnGraficarActionPerformed
 
     private void txtXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtXKeyTyped
@@ -844,6 +939,7 @@ public class RegresionLineal extends javax.swing.JFrame {
         txtA.setText(Double.toString(CalcA()));
         txtB.setText(Double.toString(CalcB()));
         txtSyx.setText(Double.toString(VarRegLin()));
+        txtR.setText(Double.toString(CalcR()));
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     /**
@@ -884,6 +980,7 @@ public class RegresionLineal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Graficos;
     private javax.swing.ButtonGroup IngresoDeDatos;
+    private javax.swing.ButtonGroup LineaOCurva;
     private javax.swing.JTable TablaFrecuencias;
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnEliminar;
@@ -914,8 +1011,10 @@ public class RegresionLineal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTreg;
+    private javax.swing.JRadioButton rbtnCurva;
     private javax.swing.JRadioButton rbtnDetener;
     private javax.swing.JRadioButton rbtnIngresar;
+    private javax.swing.JRadioButton rbtnNube;
     private javax.swing.JTextField txtA;
     private javax.swing.JTextField txtB;
     private javax.swing.JTextField txtCar;
